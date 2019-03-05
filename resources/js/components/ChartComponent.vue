@@ -1,0 +1,70 @@
+<script>
+
+    import {Line} from 'vue-chartjs';
+
+    export default {
+
+        extends: Line,
+
+        data(){
+            return {
+
+                url: "http://charts_laravel.neura/products",
+                years: [],
+                labels: [],
+                prices: [],
+                data: ''
+
+            }
+        },
+
+        methods: {
+            getProducts(){
+
+                axios.get(this.url).then((response)=>{
+
+
+                    this.data = response.data;
+
+                    if(this.data){
+
+                        this.data.forEach(element=>{
+
+                            this.years.push(element.year);
+                            this.prices.push(element.price);
+                            this.labels.push(element.name);
+                        });
+
+                        this.renderChart({
+
+                            labels: this.years,
+
+                            datasets: [
+                                {
+                                    label: 'Sales',
+                                    backgroundColor: '#f87979',
+                                    data: this.prices
+                                }
+                            ]
+                        }, {responsive: true, maintainAspectRatio: false});
+
+
+
+                        }
+                        else{
+                            console.log('No data');
+                        }
+
+                        console.log(this.labels);
+                    
+
+                });
+
+            }
+        },
+
+        mounted() {
+            this.getProducts();
+        }
+    }
+</script>
